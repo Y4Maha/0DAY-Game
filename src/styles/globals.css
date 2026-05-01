@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;600&display=swap');
+
+html, body, #root {
+  height: 100%;
+  background: theme('colors.bg');
+  color: white;
+  font-family: theme('fontFamily.body');
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+}
