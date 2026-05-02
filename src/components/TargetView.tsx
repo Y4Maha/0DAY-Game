@@ -1,36 +1,12 @@
 import { motion, AnimatePresence } from "framer-motion";
 import type { Card, TargetState } from "../engine/types";
+import { CardView } from "./CardView";
 
 interface Props {
   target: TargetState;
   onClick?: () => void;
   highlighted?: boolean;
   stagedCards?: Card[];
-}
-
-interface ChipProps {
-  card: Card;
-  staged?: boolean;
-}
-
-function PlayChip({ card, staged }: ChipProps) {
-  const colorBg =
-    card.faction === "ATTACKER"
-      ? "bg-rose-700/80 border-rose-400"
-      : "bg-cyan-700/80 border-cyan-400";
-  return (
-    <div
-      title={`${card.name} (${card.energy}⚡)`}
-      className={`flex items-center gap-1 rounded-full border ${colorBg} px-1.5 py-0.5 text-[10px] font-display ${
-        staged ? "ring-1 ring-accent ring-offset-1 ring-offset-panel opacity-90" : ""
-      }`}
-    >
-      <span className="font-bold text-white">{card.energy}</span>
-      <span className="opacity-80 max-w-[5rem] truncate hidden sm:inline">
-        {card.name}
-      </span>
-    </div>
-  );
 }
 
 export function TargetView({ target, onClick, highlighted, stagedCards = [] }: Props) {
@@ -55,20 +31,20 @@ export function TargetView({ target, onClick, highlighted, stagedCards = [] }: P
           : highlighted
           ? "border-accent animate-pulse"
           : "border-panel"
-      } p-2 sm:p-3 cursor-pointer hover:border-accent/60 transition flex flex-col gap-1.5`}
+      } p-3 cursor-pointer hover:border-accent/60 transition flex flex-col gap-2`}
     >
       <motion.div
         key={`shake-${score}`}
         animate={score !== 0 ? { x: [0, -3, 3, 0] } : { x: 0 }}
         transition={{ duration: 0.3 }}
-        className="flex flex-col gap-1.5"
+        className="flex flex-col gap-2"
       >
-        <div className="flex justify-between items-baseline gap-1">
-          <div className="font-display text-[10px] sm:text-xs uppercase tracking-wide truncate">
+        <div className="flex justify-between items-baseline">
+          <div className="font-display text-xs uppercase tracking-wide">
             {target.name}
           </div>
           {target.locked && (
-            <span className="text-[9px] text-rose-400">🔒</span>
+            <span className="text-[10px] text-rose-400">🔒 LOCKED</span>
           )}
         </div>
         <div className="relative h-2 bg-black/40 rounded-full overflow-hidden">
@@ -84,34 +60,36 @@ export function TargetView({ target, onClick, highlighted, stagedCards = [] }: P
           />
           <div className="absolute left-1/2 top-0 h-full w-px bg-white/40" />
         </div>
-        <div className="text-center text-[10px] sm:text-xs font-mono">
+        <div className="text-center text-xs font-mono">
           {score > 0 && <span className="text-rose-400">+{score} BREACH</span>}
           {score < 0 && <span className="text-cyan-400">{score} SECURE</span>}
           {score === 0 && <span className="opacity-60">— neutral —</span>}
         </div>
       </motion.div>
-      <div className="flex gap-1 flex-wrap justify-center min-h-[28px]">
+      <div className="flex gap-1 flex-wrap justify-center min-h-[64px]">
         <AnimatePresence>
           {target.cardsPlayed.map((p, i) => (
             <motion.div
               key={`${p.card.id}-${p.turn}-${i}`}
-              initial={{ y: -10, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
+              initial={{ y: -20, opacity: 0, rotate: -8 }}
+              animate={{ y: 0, opacity: 1, rotate: 0 }}
               exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.3, delay: i * 0.05 }}
+              transition={{ duration: 0.4, delay: i * 0.08 }}
             >
-              <PlayChip card={p.card} />
+              <CardView card={p.card} size="sm" />
             </motion.div>
           ))}
           {stagedCards.map((c) => (
             <motion.div
               key={`staged-${c.id}`}
-              initial={{ y: -10, opacity: 0, scale: 0.8 }}
-              animate={{ y: 0, opacity: 1, scale: 1 }}
+              initial={{ y: -16, opacity: 0, scale: 0.8 }}
+              animate={{ y: 0, opacity: 0.7, scale: 1 }}
               exit={{ opacity: 0, scale: 0.6 }}
               transition={{ type: "spring", stiffness: 350, damping: 22 }}
+              className="ring-2 ring-accent ring-offset-2 ring-offset-panel rounded-lg"
+              title="Staged play (resolves on End Turn)"
             >
-              <PlayChip card={c} staged />
+              <CardView card={c} size="sm" />
             </motion.div>
           ))}
         </AnimatePresence>
