@@ -49,12 +49,42 @@ function getCtx(): AudioContext | null {
         (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       if (!Ctor) return null;
       ctx = new Ctor();
+      // iOS WebKit unlock: play a 1-sample silent buffer the first time the
+      // context is created. Without this, Web Audio output stays silent on
+      // many iOS Safari/WebKit-based browsers (Brave, Chrome, Firefox on iOS)
+      // until something else "primes" the audio pipeline.
+      try {
+        const buf = ctx.createBuffer(1, 1, 22050);
+        const src = ctx.createBufferSource();
+        src.buffer = buf;
+        src.connect(ctx.destination);
+        src.start(0);
+      } catch {
+        // ignore; not all browsers need this
+      }
     } catch {
       return null;
     }
   }
   if (ctx.state === "suspended") ctx.resume().catch(() => {});
   return ctx;
+}
+
+// Install a one-shot listener that creates+resumes the AudioContext on the
+// very first user gesture, even if no sound was requested yet. This guarantees
+// the context is in "running" state by the time the first sfx call happens.
+let unlockerInstalled = false;
+export function installAudioUnlocker() {
+  if (unlockerInstalled || typeof window === "undefined") return;
+  unlockerInstalled = true;
+  const events: (keyof DocumentEventMap)[] = ["pointerdown", "touchstart", "keydown"];
+  const handler = () => {
+    getCtx();
+    events.forEach((e) => document.removeEventListener(e, handler));
+  };
+  events.forEach((e) =>
+    document.addEventListener(e, handler, { once: false, passive: true })
+  );
 }
 
 interface ToneOpts {
