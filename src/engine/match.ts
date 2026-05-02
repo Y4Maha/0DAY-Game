@@ -1,4 +1,4 @@
-import { Card, Faction, MatchState, TargetState, PlayerState } from "./types";
+import type { Card, Faction, MatchState, TargetState, PlayerState } from "./types";
 import { applyEffects } from "./effects";
 
 const TARGET_POOL = [

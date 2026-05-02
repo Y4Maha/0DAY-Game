@@ -1,4 +1,4 @@
-import { Card, CardEffect, MatchState, TargetState } from "./types";
+import type { Card, CardEffect, MatchState, TargetState } from "./types";
 
 export function applyEffects(
   state: MatchState,
