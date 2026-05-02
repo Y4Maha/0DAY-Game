@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { initMatch } from "../../src/engine/match";
+import { initMatch, advanceTurn, playCards } from "../../src/engine/match";
 import { CARDS_BY_FACTION } from "../../src/engine/cards";
 
 describe("initMatch", () => {
@@ -47,5 +47,55 @@ describe("initMatch", () => {
     const a = initMatch(defaults());
     const b = initMatch(defaults());
     expect(a.p1.hand.map(c => c.id)).toEqual(b.p1.hand.map(c => c.id));
+  });
+});
+
+describe("playCards + advanceTurn", () => {
+  function setup() {
+    return initMatch({
+      p1Faction: "ATTACKER",
+      p1Deck: CARDS_BY_FACTION.ATTACKER.slice(0, 8),
+      p2Faction: "DEFENDER",
+      p2Deck: CARDS_BY_FACTION.DEFENDER.slice(0, 8),
+      seed: 42,
+    });
+  }
+
+  it("plays a card and removes it from hand", () => {
+    let m = setup();
+    // find first affordable card (energy <= current energy)
+    const handCard = m.p1.hand.find(c => c.energy <= m.p1.energy)!;
+    const targetId = m.targets[0].id;
+    m = playCards(m, [{ player: "P1", cardId: handCard.id, targetId }], []);
+    expect(m.p1.hand.find(c => c.id === handCard.id)).toBeUndefined();
+    expect(m.targets[0].cardsPlayed.find(p => p.card.id === handCard.id)).toBeDefined();
+  });
+
+  it("rejects playing a card the player can't afford", () => {
+    const m = setup();
+    const expensive = m.p1.hand.find(c => c.energy > 1);
+    if (expensive) {
+      expect(() => playCards(m, [{ player: "P1", cardId: expensive.id, targetId: m.targets[0].id }], []))
+        .toThrow(/insufficient energy/i);
+    }
+  });
+
+  it("advanceTurn increments turn, increases energy, draws a card", () => {
+    let m = setup();
+    m = advanceTurn(m);
+    expect(m.turn).toBe(2);
+    expect(m.p1.energy).toBe(2);
+    expect(m.p2.energy).toBe(2);
+    expect(m.p1.hand.length).toBe(4);
+    expect(m.p2.hand.length).toBe(4);
+  });
+
+  it("ends the match after turn 6", () => {
+    let m = setup();
+    for (let i = 0; i < 5; i++) m = advanceTurn(m);
+    expect(m.turn).toBe(6);
+    m = advanceTurn(m);
+    expect(m.phase).toBe("END");
+    expect(m.winner).not.toBe(null);
   });
 });
