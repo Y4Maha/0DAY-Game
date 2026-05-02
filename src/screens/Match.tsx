@@ -88,8 +88,8 @@ export function MatchScreen() {
       : "opacity-80";
 
   return (
-    <div className="min-h-screen flex flex-col p-4 gap-4">
-      <div className="flex justify-between items-center gap-3 flex-wrap">
+    <div className="min-h-screen flex flex-col">
+      <div className="sticky top-0 z-20 bg-bg/95 backdrop-blur px-4 py-3 flex justify-between items-center gap-3 flex-wrap border-b border-white/5">
         <Logo8Bit scale={0.55} />
         <EnergyBar
           current={energyAvailable}
@@ -99,7 +99,7 @@ export function MatchScreen() {
         />
       </div>
 
-      <div className="flex-1 flex flex-col gap-3 max-w-3xl mx-auto w-full">
+      <div className="flex-1 flex flex-col gap-3 max-w-3xl mx-auto w-full px-4 pt-4 pb-28">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {match.targets.map((t) => (
             <TargetView
@@ -122,10 +122,12 @@ export function MatchScreen() {
           energyAvailable={energyAvailable}
           onCardClick={onCardClick}
         />
+      </div>
 
+      <div className="sticky bottom-0 z-20 bg-bg/95 backdrop-blur border-t border-white/5 px-4 py-3">
         <button
           onClick={onEndTurn}
-          className="bg-accent text-bg font-display font-bold py-3 rounded-lg uppercase tracking-wide hover:bg-accent/80 transition"
+          className="w-full max-w-3xl mx-auto block bg-accent text-bg font-display font-bold py-3 rounded-lg uppercase tracking-wide hover:bg-accent/80 transition shadow-lg"
         >
           End Turn ▶
         </button>
