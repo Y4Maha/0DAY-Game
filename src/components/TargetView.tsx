@@ -1,26 +1,36 @@
 import { motion, AnimatePresence } from "framer-motion";
-import type { TargetState } from "../engine/types";
+import type { Card, TargetState } from "../engine/types";
 import { CardView } from "./CardView";
 
 interface Props {
   target: TargetState;
   onClick?: () => void;
   highlighted?: boolean;
+  stagedCards?: Card[];
 }
 
-export function TargetView({ target, onClick, highlighted }: Props) {
+export function TargetView({ target, onClick, highlighted, stagedCards = [] }: Props) {
   const score = target.score;
   const breachLevel = Math.max(0, Math.min(10, score));
   const secureLevel = Math.max(0, Math.min(10, -score));
+  const hasStaged = stagedCards.length > 0;
 
   return (
     <motion.div
       onClick={onClick}
-      animate={{ x: 0 }}
+      animate={{
+        scale: hasStaged ? [1, 1.04, 1] : 1,
+        x: 0,
+      }}
+      transition={{ duration: 0.35 }}
       whileHover={{ x: 0 }}
       key={target.id}
-      className={`rounded-xl bg-panel/70 border ${
-        highlighted ? "border-accent" : "border-panel"
+      className={`rounded-xl bg-panel/70 border-2 ${
+        hasStaged
+          ? "border-accent shadow-[0_0_18px_rgba(167,139,250,0.55)]"
+          : highlighted
+          ? "border-accent animate-pulse"
+          : "border-panel"
       } p-3 cursor-pointer hover:border-accent/60 transition flex flex-col gap-2`}
     >
       <motion.div
@@ -67,6 +77,19 @@ export function TargetView({ target, onClick, highlighted }: Props) {
               transition={{ duration: 0.4, delay: i * 0.08 }}
             >
               <CardView card={p.card} size="sm" />
+            </motion.div>
+          ))}
+          {stagedCards.map((c) => (
+            <motion.div
+              key={`staged-${c.id}`}
+              initial={{ y: -16, opacity: 0, scale: 0.8 }}
+              animate={{ y: 0, opacity: 0.7, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.6 }}
+              transition={{ type: "spring", stiffness: 350, damping: 22 }}
+              className="ring-2 ring-accent ring-offset-2 ring-offset-panel rounded-lg"
+              title="Staged play (resolves on End Turn)"
+            >
+              <CardView card={c} size="sm" />
             </motion.div>
           ))}
         </AnimatePresence>

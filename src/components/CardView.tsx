@@ -13,6 +13,9 @@ export function CardView({ card, selected, disabled, onClick, size = "md" }: Pro
   const dims =
     size === "sm" ? "w-20 h-28" : size === "lg" ? "w-48 h-72" : "w-32 h-48";
 
+  const energyBadgeSize =
+    size === "sm" ? "w-5 h-5 text-xs" : size === "lg" ? "w-9 h-9 text-xl" : "w-7 h-7 text-base";
+
   const factionBg =
     card.faction === "ATTACKER"
       ? "bg-gradient-to-br from-rose-900 to-red-700 border-rose-500"
@@ -30,7 +33,13 @@ export function CardView({ card, selected, disabled, onClick, size = "md" }: Pro
       } ${disabled ? "opacity-40" : ""} shadow-lg flex flex-col text-left p-2`}
     >
       <div className="flex items-center justify-between text-xs">
-        <span className="font-bold text-white">{card.energy}</span>
+        <span
+          className={`flex items-center justify-center ${energyBadgeSize} rounded-full bg-accent text-bg font-display font-extrabold shadow-[0_0_8px_rgba(167,139,250,0.7)] border border-white/30`}
+          title={`Energy cost: ${card.energy}`}
+          aria-label={`Energy cost ${card.energy}`}
+        >
+          {card.energy}
+        </span>
         <span className="text-[10px] uppercase tracking-wider opacity-70">
           {card.faction}
         </span>

@@ -1,4 +1,5 @@
 import { useGameStore } from "../store/gameStore";
+import { Logo8Bit } from "../components/Logo8Bit";
 
 export function MenuScreen() {
   const setFaction = useGameStore((s) => s.setFaction);
@@ -13,7 +14,7 @@ export function MenuScreen() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 gap-6">
-      <h1 className="font-display text-6xl text-accent tracking-wider">0DAY</h1>
+      <Logo8Bit className="drop-shadow-[0_0_15px_rgba(167,139,250,0.4)]" />
       <p className="text-center max-w-md opacity-70">
         Real cyberattacks. Real defenses. 3-minute matches.
       </p>

@@ -1,12 +1,13 @@
 import { useGameStore } from "../store/gameStore";
 import { EmailCapture } from "../components/EmailCapture";
+import { Logo8Bit } from "../components/Logo8Bit";
 
 export function LandingScreen() {
   const setScreen = useGameStore((s) => s.setScreen);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 gap-8 max-w-2xl mx-auto text-center">
-      <h1 className="font-display text-7xl text-accent tracking-wider">0DAY</h1>
+      <Logo8Bit scale={1.2} className="drop-shadow-[0_0_20px_rgba(167,139,250,0.5)]" />
       <p className="text-lg leading-relaxed">
         A free card game where every card is a real cyberattack or defense.
         Build a deck. Breach the system. Outsmart the world.
@@ -22,7 +23,7 @@ export function LandingScreen() {
         Play Now
       </button>
 
-      <div className="border-t border-white/10 pt-6 mt-4 w-full">
+      <div className="border-t border-white/10 pt-6 mt-4 w-full flex justify-center">
         <EmailCapture />
       </div>
 

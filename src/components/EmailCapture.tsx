@@ -65,14 +65,14 @@ export function EmailCapture() {
 
   if (submitted) {
     return (
-      <div className="text-sm text-accent">
+      <div className="text-sm text-accent text-center">
         Got it. We'll email you when 0DAY launches.
       </div>
     );
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-2 w-full max-w-md">
+    <form onSubmit={onSubmit} className="flex flex-col gap-2 w-full max-w-md mx-auto">
       <div className="flex flex-col sm:flex-row gap-2">
         <input
           value={email}

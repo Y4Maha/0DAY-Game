@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useGameStore } from "../store/gameStore";
 import { learnMoreFor } from "../engine/learn-more";
 import { trackEvent } from "../analytics/posthog";
+import { Logo8Bit } from "../components/Logo8Bit";
 
 export function LearnMoreScreen() {
   const cardId = useGameStore((s) => s.learnMoreCardId);
@@ -21,7 +22,8 @@ export function LearnMoreScreen() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6">
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 gap-4">
+      <Logo8Bit scale={0.55} className="opacity-80" />
       <div className="bg-panel rounded-2xl p-6 max-w-md w-full flex flex-col gap-4">
         <div className="font-display text-xl text-accent">{lm.title}</div>
 

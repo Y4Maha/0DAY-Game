@@ -32,6 +32,7 @@ export interface Card {
   energy: number;
   effects: CardEffect[];
   flavor: string;
+  simple?: string;
   category?: string;
   art: string;
 }

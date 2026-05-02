@@ -3,6 +3,8 @@ import { useGameStore } from "../store/gameStore";
 import { TargetView } from "../components/TargetView";
 import { HandView } from "../components/HandView";
 import { EnergyBar } from "../components/EnergyBar";
+import { Logo8Bit } from "../components/Logo8Bit";
+import { sfx } from "../utils/sound";
 
 export function MatchScreen() {
   const match = useGameStore((s) => s.match);
@@ -25,26 +27,70 @@ export function MatchScreen() {
     match.p1.hand.length > 0 &&
     match.p1.hand.every((c) => c.energy > energyAvailable);
 
+  const stagedCardsByTarget = (targetId: string) =>
+    pendingPlays
+      .filter((p) => p.targetId === targetId)
+      .map((p) => match.p1.hand.find((c) => c.id === p.cardId))
+      .filter((c): c is NonNullable<typeof c> => Boolean(c));
+
   const onCardClick = (cardId: string) => {
     const isStaged = pendingPlays.some((p) => p.cardId === cardId);
     if (isStaged) {
+      sfx.cardCancel();
       unstagePlay(cardId);
       setActiveCardId(null);
     } else {
+      sfx.cardPick();
       setActiveCardId(cardId);
     }
   };
 
   const onTargetClick = (targetId: string) => {
     if (!activeCardId) return;
+    sfx.cardStage();
     stagePlay({ player: "P1", cardId: activeCardId, targetId });
     setActiveCardId(null);
   };
 
+  const onEndTurn = () => {
+    sfx.endTurn();
+    resolveTurn();
+  };
+
+  let hint: { text: string; tone: "neutral" | "accent" | "warn" };
+  if (activeCardId) {
+    hint = {
+      text: "Step 2 — tap a target to play this card. Tap the card again to cancel.",
+      tone: "accent",
+    };
+  } else if (handLocked) {
+    hint = {
+      text: "No playable cards this turn — press End Turn ▶",
+      tone: "warn",
+    };
+  } else if (pendingPlays.length === 0) {
+    hint = {
+      text: "Step 1 — tap a card from your hand to begin",
+      tone: "neutral",
+    };
+  } else {
+    hint = {
+      text: "Press End Turn ▶ to resolve, or stage another card",
+      tone: "accent",
+    };
+  }
+
+  const hintColor =
+    hint.tone === "accent"
+      ? "text-accent"
+      : hint.tone === "warn"
+      ? "text-rose-300"
+      : "opacity-80";
+
   return (
     <div className="min-h-screen flex flex-col p-4 gap-4">
-      <div className="flex justify-between items-center">
-        <div className="font-display text-lg">0DAY</div>
+      <div className="flex justify-between items-center gap-3 flex-wrap">
+        <Logo8Bit scale={0.55} />
         <EnergyBar
           current={energyAvailable}
           max={match.p1.energy}
@@ -61,21 +107,14 @@ export function MatchScreen() {
               target={t}
               onClick={() => onTargetClick(t.id)}
               highlighted={activeCardId !== null && !t.locked}
+              stagedCards={stagedCardsByTarget(t.id)}
             />
           ))}
         </div>
 
-        {activeCardId && (
-          <div className="text-center text-xs opacity-80">
-            Tap a target to play this card. Tap card again to cancel.
-          </div>
-        )}
-
-        {handLocked && !activeCardId && (
-          <div className="text-center text-xs text-accent">
-            No playable cards this turn — press End Turn ▶
-          </div>
-        )}
+        <div className={`text-center text-sm font-display tracking-wide ${hintColor}`}>
+          {hint.text}
+        </div>
 
         <HandView
           hand={match.p1.hand}
@@ -85,7 +124,7 @@ export function MatchScreen() {
         />
 
         <button
-          onClick={resolveTurn}
+          onClick={onEndTurn}
           className="bg-accent text-bg font-display font-bold py-3 rounded-lg uppercase tracking-wide hover:bg-accent/80 transition"
         >
           End Turn ▶
