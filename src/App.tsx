@@ -18,7 +18,7 @@ export default function App() {
   return (
     <>
       <SoundToggle />
-      <Credit />
+      {screen !== "LANDING" && <Credit />}
       {screen === "LANDING" && <LandingScreen />}
       {screen === "MENU" && <MenuScreen />}
       {screen === "DECK_BUILDER" && <DeckBuilderScreen />}
