@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import type { Card } from "../engine/types";
 
 interface Props {
@@ -18,12 +19,15 @@ export function CardView({ card, selected, disabled, onClick, size = "md" }: Pro
       : "bg-gradient-to-br from-cyan-900 to-blue-700 border-cyan-500";
 
   return (
-    <button
+    <motion.button
+      whileHover={!disabled ? { scale: 1.05 } : undefined}
+      whileTap={!disabled ? { scale: 0.95 } : undefined}
+      transition={{ type: "spring", stiffness: 400, damping: 20 }}
       onClick={onClick}
       disabled={disabled}
       className={`relative ${dims} rounded-lg border-2 ${factionBg} ${
         selected ? "ring-2 ring-accent" : ""
-      } ${disabled ? "opacity-40" : "hover:scale-105"} transition-transform shadow-lg flex flex-col text-left p-2`}
+      } ${disabled ? "opacity-40" : ""} shadow-lg flex flex-col text-left p-2`}
     >
       <div className="flex items-center justify-between text-xs">
         <span className="font-bold text-white">{card.energy}</span>
@@ -47,6 +51,6 @@ export function CardView({ card, selected, disabled, onClick, size = "md" }: Pro
           {card.flavor}
         </div>
       )}
-    </button>
+    </motion.button>
   );
 }
