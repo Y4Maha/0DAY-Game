@@ -10,19 +10,20 @@ interface Props {
 
 export function HandView({ hand, selectedCardIds, energyAvailable, onCardClick }: Props) {
   return (
-    <div className="flex gap-2 overflow-x-auto py-2 px-1">
+    <div className="flex gap-2 overflow-x-auto -mx-1 px-1 py-2 snap-x snap-mandatory">
       {hand.map((card) => {
         const selected = selectedCardIds.includes(card.id);
         const disabled = !selected && card.energy > energyAvailable;
         return (
-          <CardView
-            key={card.id}
-            card={card}
-            selected={selected}
-            disabled={disabled}
-            onClick={() => onCardClick(card.id)}
-            size="md"
-          />
+          <div key={card.id} className="snap-start shrink-0">
+            <CardView
+              card={card}
+              selected={selected}
+              disabled={disabled}
+              onClick={() => onCardClick(card.id)}
+              size="md"
+            />
+          </div>
         );
       })}
     </div>
