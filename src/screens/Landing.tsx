@@ -29,6 +29,8 @@ export function LandingScreen() {
 
       <div className="text-[10px] opacity-50 max-w-md">
         Built as a demo. No accounts, no ads, no payments. Anonymous analytics only.
+        <br />
+        © 2026 Y4Maha · all rights reserved
       </div>
     </div>
   );

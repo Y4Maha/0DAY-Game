@@ -6,12 +6,14 @@ import { MatchScreen } from "./screens/Match";
 import { RecapScreen } from "./screens/Recap";
 import { LearnMoreScreen } from "./screens/LearnMore";
 import { SoundToggle } from "./components/SoundToggle";
+import { Credit } from "./components/Credit";
 
 export default function App() {
   const screen = useGameStore((s) => s.screen);
   return (
     <>
       <SoundToggle />
+      <Credit />
       {screen === "LANDING" && <LandingScreen />}
       {screen === "MENU" && <MenuScreen />}
       {screen === "DECK_BUILDER" && <DeckBuilderScreen />}
