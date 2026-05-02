@@ -99,3 +99,18 @@ describe("playCards + advanceTurn", () => {
     expect(m.winner).not.toBe(null);
   });
 });
+
+describe("full match", () => {
+  it("ends after turn 6 with a defined winner", () => {
+    let m = initMatch({
+      p1Faction: "ATTACKER",
+      p1Deck: CARDS_BY_FACTION.ATTACKER.slice(0, 8),
+      p2Faction: "DEFENDER",
+      p2Deck: CARDS_BY_FACTION.DEFENDER.slice(0, 8),
+      seed: 7,
+    });
+    for (let i = 0; i < 6; i++) m = advanceTurn(m);
+    expect(m.phase).toBe("END");
+    expect(["P1", "P2", "DRAW"]).toContain(m.winner);
+  });
+});
