@@ -60,22 +60,22 @@ export function MatchScreen() {
   let hint: { text: string; tone: "neutral" | "accent" | "warn" };
   if (activeCardId) {
     hint = {
-      text: "Step 2 — tap a target to play this card. Tap the card again to cancel.",
+      text: "Tap a target to play this card. Tap card again to cancel.",
       tone: "accent",
     };
   } else if (handLocked) {
     hint = {
-      text: "No playable cards this turn — press End Turn ▶",
+      text: "No playable cards — press End Turn ▶",
       tone: "warn",
     };
   } else if (pendingPlays.length === 0) {
     hint = {
-      text: "Step 1 — tap a card from your hand to begin",
+      text: "Tap a card from your hand to begin",
       tone: "neutral",
     };
   } else {
     hint = {
-      text: "Press End Turn ▶ to resolve, or stage another card",
+      text: "Press End Turn ▶ or stage another card",
       tone: "accent",
     };
   }
@@ -88,8 +88,8 @@ export function MatchScreen() {
       : "opacity-80";
 
   return (
-    <div className="min-h-screen flex flex-col p-4 gap-4">
-      <div className="flex justify-between items-center gap-3 flex-wrap">
+    <div className="min-h-screen flex flex-col">
+      <header className="sticky top-0 z-20 bg-bg/95 backdrop-blur border-b border-white/5 px-3 py-2 flex justify-between items-center gap-3 flex-wrap">
         <Logo8Bit scale={0.55} />
         <EnergyBar
           current={energyAvailable}
@@ -97,10 +97,10 @@ export function MatchScreen() {
           turn={match.turn}
           totalTurns={6}
         />
-      </div>
+      </header>
 
-      <div className="flex-1 flex flex-col gap-3 max-w-3xl mx-auto w-full">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <main className="flex-1 flex flex-col gap-3 max-w-3xl mx-auto w-full px-3 pt-3 pb-2">
+        <div className="grid grid-cols-3 gap-2 sm:gap-3">
           {match.targets.map((t) => (
             <TargetView
               key={t.id}
@@ -112,7 +112,9 @@ export function MatchScreen() {
           ))}
         </div>
 
-        <div className={`text-center text-sm font-display tracking-wide ${hintColor}`}>
+        <div
+          className={`text-center text-[11px] sm:text-sm font-display tracking-wide ${hintColor}`}
+        >
           {hint.text}
         </div>
 
@@ -122,14 +124,16 @@ export function MatchScreen() {
           energyAvailable={energyAvailable}
           onCardClick={onCardClick}
         />
+      </main>
 
+      <footer className="sticky bottom-0 z-20 bg-bg/95 backdrop-blur border-t border-white/5 px-3 py-2 max-w-3xl mx-auto w-full">
         <button
           onClick={onEndTurn}
-          className="bg-accent text-bg font-display font-bold py-3 rounded-lg uppercase tracking-wide hover:bg-accent/80 transition"
+          className="w-full bg-accent text-bg font-display font-bold py-3 rounded-lg uppercase tracking-wide hover:bg-accent/80 transition shadow-lg"
         >
           End Turn ▶
         </button>
-      </div>
+      </footer>
     </div>
   );
 }
