@@ -20,6 +20,10 @@ export function MatchScreen() {
     return sum + (c?.energy ?? 0);
   }, 0);
   const energyAvailable = match.p1.energy - energyUsed;
+  const handLocked =
+    pendingPlays.length === 0 &&
+    match.p1.hand.length > 0 &&
+    match.p1.hand.every((c) => c.energy > energyAvailable);
 
   const onCardClick = (cardId: string) => {
     const isStaged = pendingPlays.some((p) => p.cardId === cardId);
@@ -64,6 +68,12 @@ export function MatchScreen() {
         {activeCardId && (
           <div className="text-center text-xs opacity-80">
             Tap a target to play this card. Tap card again to cancel.
+          </div>
+        )}
+
+        {handLocked && !activeCardId && (
+          <div className="text-center text-xs text-accent">
+            No playable cards this turn — press End Turn ▶
           </div>
         )}
 

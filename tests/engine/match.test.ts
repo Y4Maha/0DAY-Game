@@ -28,10 +28,10 @@ describe("initMatch", () => {
     expect(m.p2.hand.length).toBe(3);
   });
 
-  it("gives both players 1 energy on turn 1", () => {
+  it("gives both players 2 energy on turn 1", () => {
     const m = initMatch(defaults());
-    expect(m.p1.energy).toBe(1);
-    expect(m.p2.energy).toBe(1);
+    expect(m.p1.energy).toBe(2);
+    expect(m.p2.energy).toBe(2);
   });
 
   it("targets all start at score 0, not locked", () => {
@@ -73,7 +73,7 @@ describe("playCards + advanceTurn", () => {
 
   it("rejects playing a card the player can't afford", () => {
     const m = setup();
-    const expensive = m.p1.hand.find(c => c.energy > 1);
+    const expensive = m.p1.hand.find(c => c.energy > 2);
     if (expensive) {
       expect(() => playCards(m, [{ player: "P1", cardId: expensive.id, targetId: m.targets[0].id }], []))
         .toThrow(/insufficient energy/i);
@@ -84,8 +84,8 @@ describe("playCards + advanceTurn", () => {
     let m = setup();
     m = advanceTurn(m);
     expect(m.turn).toBe(2);
-    expect(m.p1.energy).toBe(2);
-    expect(m.p2.energy).toBe(2);
+    expect(m.p1.energy).toBe(3);
+    expect(m.p2.energy).toBe(3);
     expect(m.p1.hand.length).toBe(4);
     expect(m.p2.hand.length).toBe(4);
   });

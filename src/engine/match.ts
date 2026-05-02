@@ -51,7 +51,7 @@ export function initMatch(args: InitMatchArgs): MatchState {
     faction,
     deck: deck.slice(3),
     hand: deck.slice(0, 3),
-    energy: 1,
+    energy: 2,
   });
 
   return {
@@ -134,8 +134,8 @@ export function advanceTurn(state: MatchState): MatchState {
   }
 
   next.turn += 1;
-  next.p1.energy = next.turn;
-  next.p2.energy = next.turn;
+  next.p1.energy = next.turn + 1;
+  next.p2.energy = next.turn + 1;
   if (next.p1.deck.length) next.p1.hand.push(next.p1.deck.shift()!);
   if (next.p2.deck.length) next.p2.hand.push(next.p2.deck.shift()!);
   return next;
