@@ -13,7 +13,7 @@ export function SoundToggle() {
       onClick={toggle}
       aria-label={muted ? "Unmute sounds" : "Mute sounds"}
       title={muted ? "Sound off — tap to enable" : "Sound on — tap to mute"}
-      className="fixed top-3 right-3 z-30 w-9 h-9 flex items-center justify-center rounded-full bg-panel/80 border border-white/10 text-base hover:bg-panel hover:border-accent/60 transition shadow-lg"
+      className="fixed bottom-3 right-3 z-30 w-9 h-9 flex items-center justify-center rounded-full bg-panel/80 border border-white/10 text-base hover:bg-panel hover:border-accent/60 transition shadow-lg"
     >
       {muted ? "🔇" : "🔊"}
     </button>

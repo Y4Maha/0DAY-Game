@@ -3,6 +3,7 @@ import { CARDS_BY_FACTION } from "../engine/cards";
 import { CardView } from "../components/CardView";
 import { Logo8Bit } from "../components/Logo8Bit";
 import { simpleDefFor } from "../engine/card-simple";
+import { sfx } from "../utils/sound";
 
 export function DeckBuilderScreen() {
   const faction = useGameStore((s) => s.faction);
@@ -25,6 +26,15 @@ export function DeckBuilderScreen() {
   }
 
   const pool = CARDS_BY_FACTION[faction];
+
+  const onToggle = (cardId: string) => {
+    const isSelected = selected.includes(cardId);
+    const atLimit = !isSelected && selected.length >= 8;
+    if (atLimit) return;
+    if (isSelected) sfx.cardCancel();
+    else sfx.cardPick();
+    toggle(cardId);
+  };
 
   return (
     <div className="min-h-screen flex flex-col p-4 gap-4">
@@ -51,7 +61,7 @@ export function DeckBuilderScreen() {
                 card={card}
                 selected={selected.includes(card.id)}
                 disabled={!selected.includes(card.id) && selected.length >= 8}
-                onClick={() => toggle(card.id)}
+                onClick={() => onToggle(card.id)}
               />
               {def && (
                 <div
